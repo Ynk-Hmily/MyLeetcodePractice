@@ -1,4 +1,4 @@
-# 17. letterCombinations 🚀
+# 15. threeSum 🚀
 
 ## 题目描述 📄
 ![alt text](image.png)
@@ -6,6 +6,7 @@
 ---
 
 ## 思路 💡
+固定一个，剩下的做二数和——>n^2 复杂度:x:遇到了去重问题
 
 ---
 

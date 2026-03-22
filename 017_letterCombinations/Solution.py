@@ -4,7 +4,7 @@ LeetCode Problem: 17. letterCombinations
 
 #-----Solution----
 
-def Solution(self):
+def Solution(self,digits):
 	numberReflect={
 		2:["a","b","c"],
 		3:["d","e","f"],
@@ -15,12 +15,15 @@ def Solution(self):
 		8:["t","u","v"],
 		9:["w","x","y","z"]
 	}
-
+	res=[]
+	for i in range(len(digits)):
+		for letter in numberReflect[digits[i]]:
+			pass
+				
 #------Test----
 def test():
-	case=
-	for x in case:
-	    Solution(x)
+	
+	pass
 
 if __name__ == "__main__":
     s = test()
