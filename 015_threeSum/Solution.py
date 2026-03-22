@@ -4,88 +4,100 @@ LeetCode Problem: 15. threeSum
 
 #-----Solution----
 
-def Solution(nums: list[int]):
-	res=[]
-	if len(nums)<3:
-		return []
-	if len(nums)==3:
-		if (nums[0]+nums[1]+nums[2]==0):
-			return[nums]
-		else :return[]
-	nums.sort()
-	print(nums)
-	noNegativeNumsIndice= [i for i,x in enumerate(nums) if x >= 0]
-	noNegativeNums=[x for i,x in enumerate(nums)if x >=0]
-	print(noNegativeNums)
-	if len(noNegativeNums)==len(nums):
-		if noNegativeNums[0]+noNegativeNums[1]+noNegativeNums[2]==0:
-			return[[0,0,0]]
-		else:
-			return[]
-	zeroMark=noNegativeNumsIndice[0]
-	#return[zeroMark,noNegativeNums,nums]
-	dupStarts={}
-	for i in range(0,zeroMark):#起点标记在非负部
-		if nums[i]==nums[i+1]:#重复起点
-			if nums[i] in dupStarts:
-				continue
-			else:
-				dupStarts[nums[i]]=i
-				for m in range(zeroMark,len(nums)):
-					#print("d")
-					if nums[m]+nums[i]+nums[i+1]==0:
-						res.append([nums[m],nums[i],nums[i]])
-						#print(res)
-						continue
-					
-				continue
-			
-		for j in range(i+1,len(nums)-1):
-			#print("j",j)#二次标记在起点左to倒数第二位
-			if j >= zeroMark:#二号标记走至零分界
-				if nums[j]==nums[j+1]:
-					if nums[j] in dupStarts:
-						#print("jump")
-						continue
-					else:
-						dupStarts[nums[j]]=j
-						if nums[j]*2+nums[i]==0:
-							res.append([nums[j],nums[j],nums[i]])
-							continue
-						else:
-							#print('jmp')
-							continue
-				for k in range(j+1,len(nums)):#三号标记从二号标记开始to末尾
-					if k<len(nums)-1 and nums[k]==nums[k+1]:
-						if nums[k] in dupStarts:
-							continue
-						else:
-							dupStarts[nums[k]]=k
-							if nums[k]+nums[k]+nums[i]==0:
-								res.append([nums[k],nums[k],nums[i]])
-								continue
-							else:continue
-					if nums[k]+nums[j]+nums[i]==0:
-						res.append([nums[k],nums[j],nums[i]])
+def threeSum(nums: list[int]) -> list[list[int]]:
+    nums.sort()
+    res = []
+    noNegativeNumsIndice=[i for i,x in enumerate(nums) if x>=0]
+    noNegativeNums=[x for i, x in enumerate(nums) if x>=0]
+    if len(noNegativeNums)==len(nums):
+        if(nums[0]+nums[1]+nums[2]==0):
+            res.append([nums[0],nums[1],nums[2]])
+            return res
+        else:
+            return res
 
-			else:#二号标记没过零线
-				if nums[j]==nums[j+1]:
-					continue
-				for k in range(zeroMark,len(nums)):#三号标记从零线to末尾
-					if k<len(nums)-1 and nums[k]==nums[k+1]:
-						continue
-					if(nums[k]+nums[j]+nums[i]==0):
-						res.append([nums[k],nums[j],nums])
-						
-	return(res)
+    elif len(noNegativeNums)>=3 and noNegativeNums[0]+noNegativeNums[1]+noNegativeNums[2]==0:
+        res.append([noNegativeNums[0],noNegativeNums[1],noNegativeNums[2]])
+    elif len(noNegativeNums)==0:
+        return res
+#判断【0,0,0,0,1】这种情况
+    zeroMark=noNegativeNumsIndice[0]
+    dupStarts={}
+    for i in range(0,zeroMark):#左起点
+        if nums[i]==nums[i+1]:#起点重复(左半重复)
+            if nums[i] in dupStarts:
+                continue
+            else:
+                dupStarts[nums[i]]=i
+                for m in range(zeroMark,len(nums)):
+                    if nums[m]+2*nums[i]==0:
+                        res.append([nums[i],nums[i],nums[m]])
+                        break
+                continue
+        for j in range(i+1,zeroMark):#二号标记未过零分界
+            if nums[j]==nums[j+1]:#二号标记重复
+                continue
+            else:
+                for k in range(zeroMark,len(nums)):#三号标记必正
+                    if k<len(nums)-1 and nums[k]==nums[k+1]:#三号标记重复,跳过
+                        continue
+                    else:
+                        if nums[i]+nums[j]+nums[k]==0:
+                            res.append([nums[i],nums[j],nums[k]])
+                            break
+        for j in range(zeroMark,len(nums)-1):#二号标记过零分界
+            if nums[j]==nums[j+1]:#二号标记重复（右半重复）
+                if nums[j] in dupStarts:
+                    continue
+                else:
+                    dupStarts[nums[j]]=j
+                    for n in range(0,zeroMark):#这里不能到zeromark,ex:[-1,0,0,1],三个0情况放前面
+                        if nums[n]+nums[j]+nums[j+1]==0:
+                            res.append([nums[n],nums[j],nums[j+1]])
+                            break
+                    continue
+            else:
+                for k in range(j+1,len(nums)):
+                    if k<len(nums)-1 and nums[k]==nums[k+1]:#三号标记重复,跳过
+                        continue
+                    else:
+                        if nums[i]+nums[j]+nums[k]==0:
+                            res.append([nums[i],nums[j],nums[k]])
+                            break
+    return res
+
+def threeSum2( nums: list[int]) -> list[list[int]]:
+    nums.sort()
+    res=[]
+    for i in range(0,len(nums)-2):#
+        if i>0 and nums[i]==nums[i-1]:#起点重复
+            continue
+        right=len(nums)-1
+        left=i+1    
+        while left<right:
+            if nums[i]+nums[right]+nums[left]==0:
+                res.append([nums[i],nums[right],nums[left]])
+                left+=1
+                right-=1
+                while left<right and nums[left]==nums[left-1]:#跳过重复
+                    left+=1
+                while left<right and nums[right]==nums[right+1]:#跳过重复
+                    right-=1
+            elif nums[i]+nums[right]+nums[left]>0:
+                right-=1
+            elif nums[i]+nums[right]+nums[left]<0:
+                left+=1
+           
+            continue
+    return res
 
 #------Test----
 def test():
 	result=[]
 	case=[[-1,0,1,2,-1,-4],[0,0,0,0],[2,-3,0,-2,-5,-5,-4,1,2,-2,2,0,2,-4,5,5,-10]]
 	for x in case:
-		result=Solution(nums=x)
-		print(result,"/n----")
+		result=threeSum2(nums=x)
+		print(result)
 
 	
 
