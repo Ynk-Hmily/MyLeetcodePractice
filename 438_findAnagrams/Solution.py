@@ -40,7 +40,8 @@ def findAnagrams(s, p) :
 		return res
 
 
-
+def findAnagrams2(s, p) :
+	pass
 
 
 				
