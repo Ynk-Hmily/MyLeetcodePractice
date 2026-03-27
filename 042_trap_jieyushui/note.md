@@ -11,6 +11,7 @@
 :x: 4,2,0,3,2,5
 ###漏解，整体拆成局部之后漏解了。代码写的没问题，思路问题
 
+
     def trap(height: list[int]) -> int:
         res=0
         for i in range(1,len(height)-1):
@@ -49,6 +50,50 @@
             res+=area
         return res
 ---
+### :white_check_mark: 正解思路：按列算，每一列的水量等于左右最高的墙中的次高者减去当列i墙高度，暴力解时间复杂度n^2
+#### leftmax跟随i动态维护，rightmax记录并更新
+二改
+
+	res=0
+	leftMax=0
+	rightMax=0
+	rightMaxIndice=0
+	for i in range(len(height)):
+		leftMax=max(leftMax,height[i])#左最高跟随i维护即可
+		if rightMax==0 or i>=rightMaxIndice:#初始化rightMax以及更新rightMax
+			rightMax=0
+			for j in range(i+1,len(height)):
+				
+				rightMax=max(rightMax,height[j])
+				if height[j]==rightMax:
+					rightMaxIndice=j
+		thresh=min(leftMax,rightMax)
+		waterheight=thresh-height[i]
+		if waterheight>=0:
+			res=res+waterheight
+	return res
+
+#### :white_check_mark: 正解：左右指针向内滑动，O(n)
+	res=0
+	leftMax=0
+	rightMax=0
+	left=0
+	right=len(height)-1
+	while left<=right:
+		
+		if leftMax<rightMax:
+			leftMax=max(leftMax,height[left])
+			
+			res+=leftMax-height[left]
+			left+=1
+			
+		else: 
+			rightMax=max(rightMax,height[right])
+			
+			res+=rightMax-height[right]
+			right-=1
+			
+	return res
 
 ## 算法复杂度 ⏱
 
